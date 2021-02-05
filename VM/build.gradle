@@ -1,0 +1,51 @@
+
+plugins {
+    id 'java'
+    id 'application'
+    id "org.openjfx.javafxplugin" version "0.0.9"
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation 'org.apache.poi:poi:4.0.0'
+    implementation 'org.apache.poi:poi-ooxml:4.0.0'
+}
+javafx{
+    modules = ['javafx.controls', 'javafx.fxml']
+    version = '14.0.1'
+
+}
+mainClassName = "Main"
+
+jar {
+
+
+
+    from {
+
+        configurations.runtime.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+
+
+    jar {
+        manifest {
+            attributes 'Main-Class': "$mainClassName",
+                    'Class-Path': configurations.runtime.files.collect {"$it.name"}.join(' ')
+        }
+    }
+
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+}
